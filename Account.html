@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">System atched</a>
+          <a class="navbar-brand" href="#">Changer car</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -87,7 +87,7 @@
   
     	<div class="row" id="bottomNav">
     <div class="col-xs-4 text-center "><a href="index.html" class="activeColor"><i class="fa fa-home" aria-hidden="true"></i><br>Home</a></div>
-    <div class="col-xs-4 text-center"><a href="Lecture.html"><i class="fa fa-plus-circle" aria-hidden="true"></i><br>Add</a></div>
+    <div class="col-xs-4 text-center"><a href="order.html"><i class="fa fa-money" aria-hidden="true"></i><br>Order</a></div>
     <div class="col-xs-4 text-center"><a href="Account.html"><i class="fa fa-user" aria-hidden="true"></i><br>Account</a></div>
   </div>
     
@@ -98,7 +98,7 @@
 
   function Sign_out() {
     firebase.auth().signOut().then(function() {
-  window.location.replace('sign_in.html');
+  window.location.assign('sign_in.html');
 }, function(error) {
   console.log(' An error happened.' , error);
    alert (error);

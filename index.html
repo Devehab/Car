@@ -28,7 +28,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">System atched</a>
+          <a class="navbar-brand" href="#">Changer car </a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -40,10 +40,16 @@
       </div>
   </div><!-- /navbar -->
 
+       
+       
+     <div class="row">
+<div id="map" style="height: 300px; "></div>
 
+
+       </div>
  <div class="container">
 
-<div class="row" style="padding-top: 60px">
+<div class="row" style="padding-top: 12px; margin-bottom: 68px;">
   <ul id="nlist">
     
   </ul>
@@ -56,7 +62,7 @@
   
     	<div class="row" id="bottomNav">
     <div class="col-xs-4 text-center "><a href="index.html" class="activeColor"><i class="fa fa-home" aria-hidden="true"></i><br>Home</a></div>
-    <div class="col-xs-4 text-center"><a href="Lecture.html"><i class="fa fa-plus-circle" aria-hidden="true"></i><br>Add</a></div>
+    <div class="col-xs-4 text-center"><a href="order.html"><i class="fa fa-money" aria-hidden="true"></i><br>Order</a></div>
     <div class="col-xs-4 text-center"><a href="Account.html"><i class="fa fa-user" aria-hidden="true"></i><br>Account</a></div>
   </div>
     
@@ -75,12 +81,12 @@
   
   
 var User_ID;
-function Start() {
+function Start2() {
 
    
     var scores;
 
-    var ref_v = firebase.database().ref( "Users/"+ User_ID + "/MyLecture/");
+    var ref_v = firebase.database().ref( "cars/");
 
     ref_v.limitToFirst(20).orderByKey().on('value', getData, errData);
 
@@ -100,16 +106,16 @@ function Start() {
             var k =keys[i];
 
       
-            var Lecture_Name = scores[k].Lecture_Name;
-            var Lecture_Number = scores[k].Lecture_Number;
-            var Time_t = scores[k].Time_t;
-            var Date_create = scores[k].Date_add;
-            var Lecture_Ns = scores[k].Lecture_Ns;
+            var D_Name = scores[k].D_Name;
+            var Location = scores[k].Location;
+            var CaseCH = scores[k].CaseCH;
+          var cost = scores[k].cost;
+           var Time = scores[k].Time;
          
 
 
      
-      
+      if (CaseCH == true) {
 
         var para = document.createElement("li");
         var t22 = document.createTextNode(" ");
@@ -121,26 +127,40 @@ function Start() {
 
 
         var text_vl = document.createElement("h5");        
-        var t = document.createTextNode(Lecture_Name);       
+        var t = document.createTextNode(D_Name);       
         text_vl.appendChild(t);                                
         document.getElementById(k).appendChild(text_vl);   
 
 
         var date_vl = document.createElement("p");        
-        var t = document.createTextNode(Date_create);       
+        var t = document.createTextNode(Location);       
         date_vl.appendChild(t);                                
-        document.getElementById(k).appendChild(date_vl);   
+        document.getElementById(k).appendChild(date_vl);
+
+           var coustTag = document.createElement("p");        
+        var r232 = document.createTextNode(cost);       
+        coustTag.appendChild(r232);                                
+        document.getElementById(k).appendChild(coustTag);
+
+
+         var timeTag = document.createElement("p");        
+        var t21215 = document.createTextNode(Time);       
+        timeTag.appendChild(t21215);                                
+        document.getElementById(k).appendChild(timeTag);
+
 
 
         var botton_n = document.createElement("a");        
-        var t = document.createTextNode("Attend");       
+        var t = document.createTextNode("Start");       
         botton_n.appendChild(t);
         botton_n.setAttribute('class', "waves-effect  waves-light btn ");
-        var fu_onclick = "Attend('"+ k + "')";
+        var fu_onclick = "Start('"+ k + "' , '"+ D_Name + "' , '"+ Location + "' , '"+ CaseCH + "' , '"+ cost + "' , '"+ Time + "' )";
         botton_n.setAttribute('onclick' , fu_onclick); 
+        botton_n.setAttribute('style' , "z-index: 0;"); 
+        
                                        
         document.getElementById(k).appendChild(botton_n);
-
+}
 /*
         var botton_nn = document.createElement("a");        
         var t = document.createTextNode("Edit");       
@@ -182,9 +202,25 @@ function Start() {
 }
 
 
-function add(key) {
+function Start(key , D_Name , Location , CaseCH ,cost ,Time) {
 
-  // body...
+
+
+ var user = firebase.auth().currentUser;
+ var uid = user.uid;
+
+ var data = { Location: Location , CaseCH: CaseCH , cost: cost ,
+    D_Name: D_Name , Time: Time };
+var MyPath = firebase.database().ref( 'Users/' + uid + '/order/' + key + '/');
+MyPath.set(data).then(function() {
+    console.log(data);
+   window.location.assign('order.html');
+  })
+  .catch(function(error) {
+    console.log("failed: " + error.message);
+     alert (error);
+  });
+
 }
 
 
@@ -192,15 +228,58 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
   
 window.User_ID = user.uid ;
-Start();
+Start2();
     
   } else {
-     window.location.replace('Sign_in.html');
+     window.location.assign('sign_in.html');
   }
 });
 
 
 </script>
+
+ <script>
+var map;  
+var markers = [];  
+  
+function initMap() {  
+  var lat_lng = {lat: 31.57142, lng: 36.26084};  
+  var lat_lng2 = {lat: 31.25142, lng: 36.15084}; 
+  map = new google.maps.Map(document.getElementById('map'), {  
+    zoom: 7,  
+    center: lat_lng,  
+    mapTypeId: google.maps.MapTypeId.TERRAIN  
+  }); 
+
+
+   addMarker(lat_lng);  
+   addMarker(lat_lng2); 
+// start 
+
+   // end
+  
+  // This event listener will call addMarker() when the map is clicked.  
+  map.addListener('click', function(event) {  
+    addMarker(event.latLng);  
+  });  
+  
+  // Adds a marker at the center of the map.  
+   
+}  
+  
+// Adds a marker to the map and push to the array.  
+function addMarker(location) {  
+  var marker = new google.maps.Marker({  
+    position: location,  
+    map: map  
+  });  
+  markers.push(marker);  
+}  
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvT88iN5tkE_Q3-qlVqIIa5RJCQrdgznY&libraries=places&callback=initMap"
+        async defer></script>
+
+
     <!-- <script type="text/javascript" src="js/myl.js" ></script> -->
 </body>
 </html>
